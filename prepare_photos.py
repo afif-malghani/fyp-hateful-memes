@@ -50,10 +50,10 @@ def extract_features(directory):
 
     # Flatten
     model.add(Flatten())
-    model.add(Dense(units=4096, activation="relu"))
-    model.add(Dense(units=4096, activation="relu"))
-    model.add(Dense(units=2, activation="softmax"))
 
+    # dense layers
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dense(units=4096, activation="relu"))
     # re-structure the model
     model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
 
