@@ -1,6 +1,8 @@
+import keras,os
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, MaxPool2D, Flatten
 from os import listdir
 from pickle import dump
-from keras.applications.vgg16 import VGG16
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import preprocess_input
@@ -10,8 +12,48 @@ from keras.models import Model
 # extract features from each photo in the directory
 def extract_features(directory):
     # load the model
-    model = VGG16()
+    model = Sequential()
 
+    # Add 2 convolution layers
+    model.add(Conv2D(input_shape=(224, 224, 3), filters=64, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=64, kernel_size=(3, 3), padding="same", activation="relu"))
+
+    # Max pooling layer
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # Add 2 Convolution layers
+    model.add(Conv2D(filters=128, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=128, kernel_size=(3, 3), padding="same", activation="relu"))
+
+    # Max pooling layer
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # Add 3 Convolution Layers
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
+
+    # Max pooling layer
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # 3 more convolution layers and 1 pooling layer
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # 3 more convolution layers and a pooling layer
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # Flatten
+    model.add(Flatten())
+
+    # dense layers
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dense(units=4096, activation="relu"))
     # re-structure the model
     model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
 
